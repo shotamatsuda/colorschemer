@@ -1,5 +1,5 @@
-Color
-=====
+Color Schemer
+=============
 
 [![License](http://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat
 )](http://mit-license.org)

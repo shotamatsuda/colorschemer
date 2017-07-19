@@ -30,7 +30,12 @@ export default {
   entry: './src/js/main.js',
   sourceMap: true,
   plugins: [
-    nodeResolve({ main: true, module: true, browser: true }),
+    nodeResolve({
+      main: true,
+      module: true,
+      browser: true,
+      extensions: ['.js', '.json', '.jsx']
+    }),
     commonjs(),
     babel({
       presets: [
@@ -38,16 +43,24 @@ export default {
         'es2016',
         'es2017',
         'stage-3',
+        'react',
       ],
       plugins: [
         'external-helpers',
       ],
     }),
   ],
+  external: [
+    'react',
+    'react-dom',
+  ],
+  globals: {
+    'react': 'React',
+    'react-dom': 'ReactDOM',
+  },
   targets: [
     {
-      format: 'umd',
-      moduleName: 'Color',
+      format: 'iife',
       dest: './dist/js/main.js',
     },
   ],

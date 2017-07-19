@@ -24,7 +24,7 @@
     "css:compile": "stylus --print --sourcemap-inline src/css/main.styl | postcss --config . --output dist/css/main.css",
     "css:minify": "cleancss --level 1 --source-map --output dist/css/main.min.css dist/css/main.css",
     "html:minify": "html-minifier --collapse-whitespace --remove-comments --output dist/index.html src/index.html",
-    "copy:js": "mkdir -p dist/js && cp node_modules/react/dist/react.min.js node_modules/react-dom/dist/react-dom.min.js node_modules/react-transition-group/dist/react-transition-group.min.js node_modules/tether/dist/js/tether.min.js node_modules/jquery/dist/jquery.slim.min.js node_modules/bootstrap/dist/js/bootstrap.min.js dist/js",
+    "copy:js": "mkdir -p dist/js && cp node_modules/react/dist/react.js node_modules/react/dist/react.min.js node_modules/react-dom/dist/react-dom.min.js node_modules/react-dom/dist/react-dom.js node_modules/tether/dist/js/tether.min.js node_modules/jquery/dist/jquery.slim.min.js node_modules/bootstrap/dist/js/bootstrap.min.js dist/js",
     "copy:css": "mkdir -p dist/css && cp node_modules/bootstrap/dist/css/bootstrap.min.css dist/css",
     "lint": "npm-run-all js:lint",
     "prewatch": "npm run build",
@@ -36,13 +36,13 @@
     "clean": "del 'dist/*'"
   },
   "dependencies": {
+    "@shotamatsuda/color": "github:shotamatsuda/color",
     "@takram/planck-core": "^0.1.13",
     "babel-polyfill": "^6.23.0",
     "bootstrap": "^4.0.0-alpha.6",
     "jquery": "^3.2.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-transition-group": "^2.1.0",
     "tether": "^1.4.0"
   },
   "devDependencies": {
@@ -69,6 +69,6 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-replace": "^1.1.1",
     "stylus": "^0.54.5",
-    "uglify-es": "^3.0.25"
+    "uglify-js": "^3.0.25"
   }
 }
