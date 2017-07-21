@@ -24,7 +24,7 @@
     "css:compile": "stylus --print --sourcemap-inline src/css/main.styl | postcss --config . --output dist/css/main.css",
     "css:minify": "cleancss --level 1 --source-map --output dist/css/main.min.css dist/css/main.css",
     "html:minify": "html-minifier --collapse-whitespace --remove-comments --output dist/index.html src/index.html",
-    "copy:js": "mkdir -p dist/js && cp node_modules/react/dist/react.js node_modules/react/dist/react.min.js node_modules/react-dom/dist/react-dom.min.js node_modules/react-dom/dist/react-dom.js node_modules/tether/dist/js/tether.min.js node_modules/jquery/dist/jquery.slim.min.js node_modules/bootstrap/dist/js/bootstrap.min.js dist/js",
+    "copy:js": "mkdir -p dist/js && cp node_modules/react/dist/react.js node_modules/react/dist/react.min.js node_modules/react-dom/dist/react-dom.min.js node_modules/react-dom/dist/react-dom.js node_modules/tether/dist/js/tether.min.js node_modules/jquery/dist/jquery.slim.min.js node_modules/bootstrap/dist/js/bootstrap.min.js node_modules/three/build/three.min.js dist/js",
     "copy:css": "mkdir -p dist/css && cp node_modules/bootstrap/dist/css/bootstrap.min.css dist/css",
     "lint": "npm-run-all js:lint",
     "prewatch": "npm run build",
@@ -43,7 +43,8 @@
     "jquery": "^3.2.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "tether": "^1.4.0"
+    "tether": "^1.4.0",
+    "three": "^0.86.0"
   },
   "devDependencies": {
     "@takram/eslint-config-planck": "^0.1.7",

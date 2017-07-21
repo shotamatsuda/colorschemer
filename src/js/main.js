@@ -25,9 +25,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
+import LChGradient from './component/LChGradient'
+
 function App() {
   return (
-    <div></div>
+    <div>
+      <LChGradient />
+    </div>
   )
 }
 

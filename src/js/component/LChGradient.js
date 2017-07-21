@@ -22,48 +22,44 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import babel from 'rollup-plugin-babel'
-import commonjs from 'rollup-plugin-commonjs'
-import nodeResolve from 'rollup-plugin-node-resolve'
+import React from 'react'
 
-export default {
-  entry: './src/js/main.js',
-  sourceMap: true,
-  plugins: [
-    nodeResolve({
-      main: true,
-      module: true,
-      browser: true,
-      extensions: ['.js', '.json', '.jsx']
-    }),
-    commonjs(),
-    babel({
-      presets: [
-        ['es2015', { modules: false }],
-        'es2016',
-        'es2017',
-        'stage-3',
-        'react',
-      ],
-      plugins: [
-        'external-helpers',
-      ],
-    }),
-  ],
-  external: [
-    'react',
-    'react-dom',
-    'three',
-  ],
-  globals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM',
-    'three': 'THREE',
-  },
-  targets: [
-    {
-      format: 'iife',
-      dest: './dist/js/main.js',
-    },
-  ],
+import { LChuv } from '@shotamatsuda/color'
+
+export default class LChGradient extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  componentDidMount() {
+    this.draw()
+  }
+
+  draw() {
+    const context = this.canvas.getContext('2d')
+    const { width, height } = this.canvas
+    context.clearRect(0, 0, width, height)
+    for (let y = 0; y < height; ++y) {
+      for (let x = 0; x < width; ++x) {
+        const u = x / width
+        const v = y / height
+        const l = (1.0 - v) * 100
+        const c = (0.5 - Math.abs(0.5 - v)) * 100
+        const h = u * Math.PI * 2
+        const rgb = new LChuv(l, c, h).toRGB()
+        context.fillStyle = `rgb(${Math.round(rgb.r * 255)},${Math.round(rgb.g * 255)},${Math.round(rgb.b * 255)})`
+        context.fillRect(x, y, 1, 1)
+      }
+    }
+  }
+
+  render() {
+    return (
+      <canvas
+        width="1000"
+        height="500"
+        ref={canvas => this.canvas = canvas}>
+      </canvas>
+    )
+  }
 }
