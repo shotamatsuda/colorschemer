@@ -22,20 +22,12 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom'
-
-import LChabSpectrum from './component/LChabSpectrum'
-
-function App() {
-  return (
-    <div>
-      <LChabSpectrum />
-    </div>
-  )
+vec3 tristimulus(vec3 chromaticity, float luminance) {
+  float ly = luminance / chromaticity.y;
+  return vec3(
+    ly * chromaticity.x,
+    luminance,
+    ly * (1.0 - chromaticity.x - chromaticity.y));
 }
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('app'),
-)
+#pragma glslify: export(tristimulus)

@@ -23,19 +23,49 @@
 //
 
 import React from 'react'
-import ReactDOM from 'react-dom'
+import Three from 'three'
 
-import LChabSpectrum from './component/LChabSpectrum'
+import fragmentShader from '../shader/ryb_wheel_frag.glsl'
+import vertexShader from '../shader/ryb_wheel_vert.glsl'
 
-function App() {
-  return (
-    <div>
-      <LChabSpectrum />
-    </div>
-  )
+export default class RYBWheel extends React.Component {
+  constructor(props) {
+    super(props)
+  }
+
+  componentDidMount() {
+    this.init()
+    this.draw()
+  }
+
+  init() {
+		this.camera = new Three.Camera()
+		this.camera.position.z = 1
+		this.scene = new Three.Scene()
+		this.geometry = new Three.PlaneBufferGeometry(2, 2)
+		this.material = new Three.ShaderMaterial({
+			vertexShader,
+			fragmentShader,
+		})
+		this.mesh = new Three.Mesh(this.geometry, this.material)
+		this.scene.add(this.mesh)
+		this.renderer = new Three.WebGLRenderer({
+      canvas: this.canvas,
+    })
+		// this.renderer.setPixelRatio(window.devicePixelRatio)
+  }
+
+  draw() {
+    this.renderer.render(this.scene, this.camera)
+  }
+
+  render() {
+    return (
+      <canvas
+        width="500"
+        height="500"
+        ref={canvas => this.canvas = canvas}>
+      </canvas>
+    )
+  }
 }
-
-ReactDOM.render(
-  <App />,
-  document.getElementById('app'),
-)

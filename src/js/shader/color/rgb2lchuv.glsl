@@ -22,20 +22,14 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom'
+#pragma glslify: rgb2luv = require('./rgb2luv', matrix=matrix)
 
-import LChabSpectrum from './component/LChabSpectrum'
-
-function App() {
-  return (
-    <div>
-      <LChabSpectrum />
-    </div>
-  )
+vec3 luc2lchuv(vec3 lab) {
+  return vec3(lab.x, length(vec2(lab.yz)), atan(lab.z, lab.y));
 }
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('app'),
-)
+vec3 rgb2lchuv(vec3 rgb, vec3 illuminant) {
+  return luc2lchuv(rgb2luv(rgb, illuminant));
+}
+
+#pragma glslify: export(rgb2lchuv)

@@ -22,20 +22,32 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom'
+// TODO: Optimization
 
-import LChabSpectrum from './component/LChabSpectrum'
+#pragma glslify: tristimulus = require('./tristimulus')
+#pragma glslify: xyz2rgb = require('./xyz2rgb', matrix=matrix)
 
-function App() {
-  return (
-    <div>
-      <LChabSpectrum />
-    </div>
-  )
+float decompand(float value) {
+  if (value > 6.0 / 29.0) {
+    return pow(value, 3.0);
+  }
+  return (108.0 / 841.0) * (value - 4.0 / 29.0);
 }
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('app'),
-)
+vec3 lab2xyz(vec3 lab, vec3 illuminant) {
+  float l = lab.x;
+  float a = lab.y;
+  float b = lab.z;
+  vec3 w = tristimulus(illuminant, 1.0);
+  float t = (l + 16.0) / 116.0;
+  return vec3(
+    decompand(t + a / 500.0) * w.x,
+    decompand(t) * w.y,
+    decompand(t - b / 200.0) * w.z);
+}
+
+vec3 lab2rgb(vec3 lab, vec3 illuminant) {
+  return xyz2rgb(lab2xyz(lab, illuminant));
+}
+
+#pragma glslify: export(lab2rgb)

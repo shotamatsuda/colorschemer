@@ -21,3 +21,15 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 //
+
+#pragma glslify: lab2rgb = require('./lab2rgb', matrix=matrix)
+
+vec3 lchab2lab(vec3 lch) {
+  return vec3(lch.x, lch.y * cos(lch.z), lch.y * sin(lch.z));
+}
+
+vec3 lchab2rgb(vec3 lch, vec3 illuminant) {
+  return lab2rgb(lchab2lab(lch), illuminant);
+}
+
+#pragma glslify: export(lchab2rgb)

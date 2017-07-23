@@ -22,20 +22,20 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom'
+varying vec2 vUv;
 
-import LChabSpectrum from './component/LChabSpectrum'
+const float pi = 3.14159265358979323846264338327950288419;
+const float twoPi = 2.0 * pi;
 
-function App() {
-  return (
-    <div>
-      <LChabSpectrum />
-    </div>
-  )
+#pragma glslify: ryb2rgb = require('./color/ryb2rgb')
+#pragma glslify: rgb2hsv = require('./color/rgb2hsv')
+#pragma glslify: hsv2rgb = require('./color/hsv2rgb')
+
+void main()	{
+  vec2 uv = (vUv - 0.5) * 2.0;
+  float r = mod((atan(uv.y, uv.x) + twoPi), twoPi) / twoPi;
+  float s = clamp(length(uv), 0.0, 1.0);
+  float h = rgb2hsv(ryb2rgb(hsv2rgb(vec3(r, 1.0, 1.0)))).x;
+  vec3 color = hsv2rgb(vec3(h, s, 1.0));
+  gl_FragColor = vec4(color.x, color.y, color.z, 1.0);
 }
-
-ReactDOM.render(
-  <App />,
-  document.getElementById('app'),
-)

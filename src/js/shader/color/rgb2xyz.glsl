@@ -21,3 +21,21 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 //
+
+// TODO: Optimization
+
+float decompand(float value) {
+  if (value > 0.04045) {
+    return pow((value + 0.055) / 1.055, 2.4);
+  }
+  return value / 12.92;
+}
+
+vec3 rgb2xyz(vec3 rgb) {
+  float r = rgb.x;
+  float g = rgb.y;
+  float b = rgb.z;
+  return matrix * vec3(decompand(r), decompand(g), decompand(b));
+}
+
+#pragma glslify: export(rgb2xyz)

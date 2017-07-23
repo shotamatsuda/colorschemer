@@ -21,3 +21,36 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 //
+
+// TODO: Optimization
+
+#pragma glslify: tristimulus = require('./tristimulus')
+#pragma glslify: rgb2xyz = require('./rgb2xyz', matrix=matrix)
+
+vec2 xyz2ucs(vec3 value) {
+  return vec2(
+    4.0 * value.x / (value.x + 15.0 * value.y + 3.0 * value.z),
+    9.0 * value.x / (value.x + 15.0 * value.y + 3.0 * value.z));
+}
+
+vec3 xyz2luv(vec3 xyz, vec3 illuminant) {
+  vec3 w = tristimulus(illuminant, 1.0);
+  float l = xyz.y / w.y;
+  if (l > 216.0 / 24389.0) {
+    l = 116.0 * pow(l, 1.0 / 3.0) - 16.0;
+  } else {
+    l = (24389.0 / 27.0) * l;
+  }
+  vec2 ucs = xyz2ucs(xyz);
+  vec2 ucsN = xyz2ucs(w);
+  return vec3(
+    l,
+    13.0 * l * (ucs.x - ucsN.x),
+    13.0 * l * (ucs.y - ucsN.y));
+}
+
+vec3 rgb2luv(vec3 rgb, vec3 illuminant) {
+  return xyz2luv(rgb2xyz(rgb), illuminant);
+}
+
+#pragma glslify: export(rgb2luv)

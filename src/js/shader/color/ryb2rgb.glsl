@@ -22,20 +22,35 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom'
+// TODO: Optimization
 
-import LChabSpectrum from './component/LChabSpectrum'
-
-function App() {
-  return (
-    <div>
-      <LChabSpectrum />
-    </div>
-  )
+vec3 ryb2rgb(vec3 ryb) {
+  float r = ryb.x, y = ryb.y, b = ryb.z;
+  float white = min(r, min(y, b));
+  r -= white;
+  y -= white;
+  b -= white;
+  float maxY = max(r, max(y, b));
+  float g = min(y, b);
+  y -= g;
+  b -= g;
+  if (b != 0.0 && g != 0.0) {
+    b *= 2.0;
+    g *= 2.0;
+  }
+  r += y;
+  g += y;
+  float maxG = max(r, max(g, b));
+  if (maxG != 0.0) {
+    float n = maxY / maxG;
+    r *= n;
+    g *= n;
+    b *= n;
+  }
+  r += white;
+  g += white;
+  b += white;
+  return vec3(r, g, b);
 }
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('app'),
-)
+#pragma glslify: export(ryb2rgb)

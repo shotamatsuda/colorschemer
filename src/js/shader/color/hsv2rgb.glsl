@@ -22,20 +22,31 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom'
+// TODO: Optimization
 
-import LChabSpectrum from './component/LChabSpectrum'
-
-function App() {
-  return (
-    <div>
-      <LChabSpectrum />
-    </div>
-  )
+vec3 hsv2rgb(vec3 hsv) {
+  float h = hsv.x;
+  float s = hsv.y;
+  float v = hsv.z;
+  float i = floor(h * 6.0);
+  float f = h * 6.0 - i;
+  float p = v * (1.0 - s);
+  float q = v * (1.0 - f * s);
+  float t = v * (1.0 - (1.0 - f) * s);
+  if (i == 0.0) {
+    return vec3(v, t, p);
+  } else if (i == 1.0) {
+    return vec3(q, v, p);
+  } else if (i == 2.0) {
+    return vec3(p, v, t);
+  } else if (i == 3.0) {
+    return vec3(p, q, v);
+  } else if (i == 4.0) {
+    return vec3(t, p, v);
+  } else if (i == 5.0) {
+    return vec3(v, p, q);
+  }
+  return vec3(0, 0, 0);
 }
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('app'),
-)
+#pragma glslify: export(hsv2rgb)

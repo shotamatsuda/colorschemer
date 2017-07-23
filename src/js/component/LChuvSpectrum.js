@@ -1,4 +1,4 @@
- //
+//
 //  The MIT License
 //
 //  Copyright (C) 2016-Present Shota Matsuda
@@ -23,34 +23,50 @@
 //
 
 import React from 'react'
+import Three from 'three'
 
-import { LChuv } from '@shotamatsuda/color'
+import { Illuminant, Primaries, XYZ } from '@shotamatsuda/color'
 
-export default class LChGradient extends React.Component {
+import fragmentShader from '../shader/lchuv_spectrum_frag.glsl'
+import vertexShader from '../shader/lchuv_spectrum_vert.glsl'
+
+export default class LChuvSpectrum extends React.Component {
   constructor(props) {
     super(props)
   }
 
   componentDidMount() {
+    this.init()
     this.draw()
   }
 
-  draw() {
-    const context = this.canvas.getContext('2d')
-    const { width, height } = this.canvas
-    context.clearRect(0, 0, width, height)
-    for (let y = 0; y < height; ++y) {
-      for (let x = 0; x < width; ++x) {
-        const u = x / width
-        const v = y / height
-        const l = (1.0 - v) * 100
-        const c = (0.5 - Math.abs(0.5 - v)) * 100
-        const h = u * Math.PI * 2
-        const rgb = new LChuv(l, c, h).toRGB()
-        context.fillStyle = `rgb(${Math.round(rgb.r * 255)},${Math.round(rgb.g * 255)},${Math.round(rgb.b * 255)})`
-        context.fillRect(x, y, 1, 1)
-      }
+  init() {
+		this.camera = new Three.Camera()
+		this.camera.position.z = 1
+		this.scene = new Three.Scene()
+		this.geometry = new Three.PlaneBufferGeometry(2, 2)
+    const illuminant = new Three.Vector3(...Illuminant.D50.toArray())
+    const matrix = new THREE.Matrix3()
+    matrix.set(...XYZ.getXYZToRGBMatrix(Primaries.sRGB))
+    const uniforms = {
+      illuminant: { value: illuminant },
+      matrix: { value: matrix },
     }
+		this.material = new Three.ShaderMaterial({
+      uniforms,
+			vertexShader,
+			fragmentShader,
+		})
+		this.mesh = new Three.Mesh(this.geometry, this.material)
+		this.scene.add(this.mesh)
+		this.renderer = new Three.WebGLRenderer({
+      canvas: this.canvas,
+    })
+		// this.renderer.setPixelRatio(window.devicePixelRatio)
+  }
+
+  draw() {
+    this.renderer.render(this.scene, this.camera)
   }
 
   render() {
