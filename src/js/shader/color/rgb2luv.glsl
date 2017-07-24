@@ -36,11 +36,11 @@ vec2 xyz2ucs(vec3 value) {
 
 vec3 xyz2luv(vec3 xyz, vec3 illuminant) {
   vec3 w = tristimulus(illuminant, 1.0);
-  float l = xyz.y / w.y;
+  float l;
   if (l > 216.0 / 24389.0) {
-    l = 116.0 * pow(l, 1.0 / 3.0) - 16.0;
+    l = 116.0 * pow((xyz.y / w.y), 1.0 / 3.0) - 16.0;
   } else {
-    l = (24389.0 / 27.0) * l;
+    l = (24389.0 / 27.0) * (xyz.y / w.y);
   }
   vec2 ucs = xyz2ucs(xyz);
   vec2 ucsN = xyz2ucs(w);

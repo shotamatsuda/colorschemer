@@ -77,6 +77,7 @@ export default class LCHabHueSpectrum extends Component {
       },
       illuminant: { value: illuminant },
       matrix: { value: matrix },
+      maxChroma: { value: this.props.maxChroma },
       hue: { value: this.state.hue },
     }
     this.material = new Three.ShaderMaterial({
@@ -117,6 +118,7 @@ export default class LCHabHueSpectrum extends Component {
 LCHabHueSpectrum.defaultProps = {
   width: 500,
   height: 500,
+  maxChroma: 132,
 }
 
 LCHabHueSpectrum.propTypes = {

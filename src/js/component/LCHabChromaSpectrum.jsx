@@ -103,7 +103,7 @@ export default class LCHabChromaSpectrum extends Component {
           name="chroma"
           type="range"
           min="0"
-          max="128"
+          max={this.props.maxChroma}
           step="any"
           style={{ width: '100%' }}
           value={this.state.chroma}
@@ -117,6 +117,7 @@ export default class LCHabChromaSpectrum extends Component {
 LCHabChromaSpectrum.defaultProps = {
   width: 1000,
   height: 500,
+  maxChroma: 132,
 }
 
 LCHabChromaSpectrum.propTypes = {

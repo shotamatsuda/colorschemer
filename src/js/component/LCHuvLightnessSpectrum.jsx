@@ -77,6 +77,7 @@ export default class LCHuvLightnessSpectrum extends Component {
       },
       illuminant: { value: illuminant },
       matrix: { value: matrix },
+      maxChroma: { value: this.props.maxChroma },
       lightness: { value: this.state.lightness },
     }
     this.material = new Three.ShaderMaterial({
@@ -117,6 +118,7 @@ export default class LCHuvLightnessSpectrum extends Component {
 LCHuvLightnessSpectrum.defaultProps = {
   width: 1000,
   height: 500,
+  maxChroma: 178,
 }
 
 LCHuvLightnessSpectrum.propTypes = {
