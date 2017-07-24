@@ -1,4 +1,4 @@
- //
+//
 //  The MIT License
 //
 //  Copyright (C) 2016-Present Shota Matsuda
@@ -22,44 +22,25 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import React from 'react'
+uniform vec2 resolution;
+uniform vec3 illuminant;
+uniform mat3 matrix;
+uniform float hue;
 
-import { LChuv } from '@shotamatsuda/color'
+varying vec2 vUv;
 
-export default class LChGradient extends React.Component {
-  constructor(props) {
-    super(props)
-  }
+const float pi = 3.14159265358979323846264338327950288419;
 
-  componentDidMount() {
-    this.draw()
-  }
+#pragma glslify: lchab2rgb = require('./color/lchab2rgb', matrix=matrix)
+#pragma glslify: checkerboard = require('./checkerboard')
 
-  draw() {
-    const context = this.canvas.getContext('2d')
-    const { width, height } = this.canvas
-    context.clearRect(0, 0, width, height)
-    for (let y = 0; y < height; ++y) {
-      for (let x = 0; x < width; ++x) {
-        const u = x / width
-        const v = y / height
-        const l = (1.0 - v) * 100
-        const c = (0.5 - Math.abs(0.5 - v)) * 100
-        const h = u * Math.PI * 2
-        const rgb = new LChuv(l, c, h).toRGB()
-        context.fillStyle = `rgb(${Math.round(rgb.r * 255)},${Math.round(rgb.g * 255)},${Math.round(rgb.b * 255)})`
-        context.fillRect(x, y, 1, 1)
-      }
-    }
-  }
-
-  render() {
-    return (
-      <canvas
-        width="1000"
-        height="500"
-        ref={canvas => this.canvas = canvas}>
-      </canvas>
-    )
-  }
+void main()  {
+  vec2 uv = vUv;
+  vec2 coord = uv * resolution;
+  float l = uv.y * 100.0;
+  float c = uv.x * 132.0;
+  float h = hue / 180.0 * pi;
+  vec4 color = lchab2rgb(vec4(l, c, h, 1.0), illuminant);
+  vec4 transparent = checkerboard(coord, 8.0);
+  gl_FragColor = vec4(mix(transparent.rgb, color.rgb, color.a), 1.0);
 }

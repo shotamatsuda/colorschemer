@@ -24,6 +24,8 @@
 
 // TODO: Optimization
 
+#pragma glslify: validate = require('./validate')
+
 float compand(float value) {
   if (value > 0.0031308) {
     return 1.055 * pow(value, 1.0 / 2.4) - 0.055;
@@ -32,8 +34,14 @@ float compand(float value) {
 }
 
 vec3 xyz2rgb(vec3 xyz) {
-  vec3 rgb = matrix * xyz;
+  vec3 rgb = matrix * xyz.xyz;
   return vec3(compand(rgb.x), compand(rgb.y), compand(rgb.z));
+}
+
+vec4 xyz2rgb(vec4 xyz) {
+  vec3 rgb = xyz2rgb(xyz.xyz);
+  return vec4(rgb, xyz.w *
+    validate(rgb, vec3(0.0), vec3(1.0)));
 }
 
 #pragma glslify: export(xyz2rgb)

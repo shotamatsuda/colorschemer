@@ -32,10 +32,13 @@ float decompand(float value) {
 }
 
 vec3 rgb2xyz(vec3 rgb) {
-  float r = rgb.x;
-  float g = rgb.y;
-  float b = rgb.z;
-  return matrix * vec3(decompand(r), decompand(g), decompand(b));
+  return matrix * vec3(decompand(rgb.x), decompand(rgb.y), decompand(rgb.z));
+}
+
+vec4 rgb2xyz(vec4 rgb) {
+  vec3 xyz = rgb2xyz(rgb.xyz);
+  return vec4(xyz, rgb.w *
+    validate(rgb, vec3(0.0), vec3(1.0)));
 }
 
 #pragma glslify: export(rgb2xyz)

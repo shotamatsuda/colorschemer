@@ -28,7 +28,15 @@ vec3 lchab2lab(vec3 lch) {
   return vec3(lch.x, lch.y * cos(lch.z), lch.y * sin(lch.z));
 }
 
+vec4 lchab2lab(vec4 lch) {
+  return vec4(lchab2lab(lch.xyz), lch.w);
+}
+
 vec3 lchab2rgb(vec3 lch, vec3 illuminant) {
+  return lab2rgb(lchab2lab(lch), illuminant);
+}
+
+vec4 lchab2rgb(vec4 lch, vec3 illuminant) {
   return lab2rgb(lchab2lab(lch), illuminant);
 }
 

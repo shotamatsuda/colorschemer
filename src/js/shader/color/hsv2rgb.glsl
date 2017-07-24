@@ -25,28 +25,29 @@
 // TODO: Optimization
 
 vec3 hsv2rgb(vec3 hsv) {
-  float h = hsv.x;
-  float s = hsv.y;
-  float v = hsv.z;
-  float i = floor(h * 6.0);
-  float f = h * 6.0 - i;
-  float p = v * (1.0 - s);
-  float q = v * (1.0 - f * s);
-  float t = v * (1.0 - (1.0 - f) * s);
+  float i = floor(hsv.x * 6.0);
+  float f = hsv.x * 6.0 - i;
+  float p = hsv.z * (1.0 - hsv.y);
+  float q = hsv.z * (1.0 - f * hsv.y);
+  float t = hsv.z * (1.0 - (1.0 - f) * hsv.y);
   if (i == 0.0) {
-    return vec3(v, t, p);
+    return vec3(hsv.z, t, p);
   } else if (i == 1.0) {
-    return vec3(q, v, p);
+    return vec3(q, hsv.z, p);
   } else if (i == 2.0) {
-    return vec3(p, v, t);
+    return vec3(p, hsv.z, t);
   } else if (i == 3.0) {
-    return vec3(p, q, v);
+    return vec3(p, q, hsv.z);
   } else if (i == 4.0) {
-    return vec3(t, p, v);
+    return vec3(t, p, hsv.z);
   } else if (i == 5.0) {
-    return vec3(v, p, q);
+    return vec3(hsv.z, p, q);
   }
-  return vec3(0, 0, 0);
+  return vec3(0.0, 0.0, 0.0);
+}
+
+vec4 hsv2rgb(vec4 hsv) {
+  return vec4(hsv2rgb(hsv.xyz), hsv.w);
 }
 
 #pragma glslify: export(hsv2rgb)

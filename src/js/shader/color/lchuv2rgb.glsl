@@ -28,7 +28,15 @@ vec3 lchuv2luv(vec3 lch) {
   return vec3(lch.x, lch.y * cos(lch.z), lch.y * sin(lch.z));
 }
 
+vec4 lchuv2luv(vec4 lch) {
+  return vec4(lchuv2luv(lch.xyz), lch.w);
+}
+
 vec3 lchuv2rgb(vec3 lch, vec3 illuminant) {
+  return luv2rgb(lchuv2luv(lch), illuminant);
+}
+
+vec4 lchuv2rgb(vec4 lch, vec3 illuminant) {
   return luv2rgb(lchuv2luv(lch), illuminant);
 }
 

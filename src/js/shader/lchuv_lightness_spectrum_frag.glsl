@@ -22,50 +22,24 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import React from 'react'
-import Three from 'three'
+uniform vec2 resolution;
+uniform vec3 illuminant;
+uniform mat3 matrix;
+uniform float lightness;
 
-import fragmentShader from '../shader/ryb_wheel_frag.glsl'
-import vertexShader from '../shader/ryb_wheel_vert.glsl'
+varying vec2 vUv;
 
-export default class RYBWheel extends React.Component {
-  constructor(props) {
-    super(props)
-  }
+const float pi = 3.14159265358979323846264338327950288419;
 
-  componentDidMount() {
-    this.init()
-    this.draw()
-  }
+#pragma glslify: lchuv2rgb = require('./color/lchuv2rgb', matrix=matrix)
+#pragma glslify: checkerboard = require('./checkerboard')
 
-  init() {
-		this.camera = new Three.Camera()
-		this.camera.position.z = 1
-		this.scene = new Three.Scene()
-		this.geometry = new Three.PlaneBufferGeometry(2, 2)
-		this.material = new Three.ShaderMaterial({
-			vertexShader,
-			fragmentShader,
-		})
-		this.mesh = new Three.Mesh(this.geometry, this.material)
-		this.scene.add(this.mesh)
-		this.renderer = new Three.WebGLRenderer({
-      canvas: this.canvas,
-    })
-		// this.renderer.setPixelRatio(window.devicePixelRatio)
-  }
-
-  draw() {
-    this.renderer.render(this.scene, this.camera)
-  }
-
-  render() {
-    return (
-      <canvas
-        width="500"
-        height="500"
-        ref={canvas => this.canvas = canvas}>
-      </canvas>
-    )
-  }
+void main()  {
+  vec2 uv = vUv;
+  vec2 coord = uv * resolution;
+  float c = (1.0 - uv.y) * 178.0;
+  float h = uv.x * pi * 2.0;
+  vec4 color = lchuv2rgb(vec4(lightness, c, h, 1.0), illuminant);
+  vec4 transparent = checkerboard(coord, 8.0);
+  gl_FragColor = vec4(mix(transparent.rgb, color.rgb, color.a), 1.0);
 }

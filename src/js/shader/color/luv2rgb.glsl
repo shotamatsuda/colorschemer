@@ -25,12 +25,13 @@
 // TODO: Optimization
 
 #pragma glslify: tristimulus = require('./tristimulus')
+#pragma glslify: validate = require('./validate')
 #pragma glslify: xyz2rgb = require('./xyz2rgb', matrix=matrix)
 
 vec2 xyz2ucs(vec3 value) {
   return vec2(
     4.0 * value.x / (value.x + 15.0 * value.y + 3.0 * value.z),
-    9.0 * value.x / (value.x + 15.0 * value.y + 3.0 * value.z));
+    9.0 * value.y / (value.x + 15.0 * value.y + 3.0 * value.z));
 }
 
 vec3 luv2xyz(vec3 luv, vec3 illuminant) {
@@ -49,7 +50,15 @@ vec3 luv2xyz(vec3 luv, vec3 illuminant) {
   return vec3(x, y, z);
 }
 
+vec4 luv2xyz(vec4 luv, vec3 illuminant) {
+  return vec4(luv2xyz(luv.xyz, illuminant), luv.w);
+}
+
 vec3 luv2rgb(vec3 luv, vec3 illuminant) {
+  return xyz2rgb(luv2xyz(luv, illuminant));
+}
+
+vec4 luv2rgb(vec4 luv, vec3 illuminant) {
   return xyz2rgb(luv2xyz(luv, illuminant));
 }
 

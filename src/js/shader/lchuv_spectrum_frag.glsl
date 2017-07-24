@@ -28,15 +28,13 @@ uniform mat3 matrix;
 varying vec2 vUv;
 
 const float pi = 3.14159265358979323846264338327950288419;
-const float twoPi = 2.0 * pi;
 
 #pragma glslify: lchuv2rgb = require('./color/lchuv2rgb', matrix=matrix)
 
-void main()	{
+void main()  {
   vec2 uv = vUv;
   float l = uv.y * 100.0;
   float c = (0.5 - abs(0.5 - uv.y)) * 100.0;
   float h = uv.x * pi * 2.0;
-  vec3 color = lchuv2rgb(vec3(l, c, h), illuminant);
-  gl_FragColor = vec4(color.x, color.y, color.z, 1.0);
+  gl_FragColor = lchuv2rgb(vec4(l, c, h, 1.0), illuminant);
 }

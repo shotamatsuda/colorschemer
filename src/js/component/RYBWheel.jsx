@@ -22,47 +22,36 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import React from 'react'
+import { Component } from 'react'
+import PropTypes from 'prop-types'
 import Three from 'three'
 
-import { Illuminant, Primaries, XYZ } from '@shotamatsuda/color'
+import fragmentShader from '../shader/ryb_wheel_frag.glsl'
+import vertexShader from '../shader/ryb_wheel_vert.glsl'
 
-import fragmentShader from '../shader/lchuv_spectrum_frag.glsl'
-import vertexShader from '../shader/lchuv_spectrum_vert.glsl'
-
-export default class LChuvSpectrum extends React.Component {
-  constructor(props) {
-    super(props)
-  }
-
+export default class RYBWheel extends Component {
   componentDidMount() {
     this.init()
     this.draw()
   }
 
   init() {
-		this.camera = new Three.Camera()
-		this.camera.position.z = 1
-		this.scene = new Three.Scene()
-		this.geometry = new Three.PlaneBufferGeometry(2, 2)
-    const illuminant = new Three.Vector3(...Illuminant.D50.toArray())
-    const matrix = new THREE.Matrix3()
-    matrix.set(...XYZ.getXYZToRGBMatrix(Primaries.sRGB))
-    const uniforms = {
-      illuminant: { value: illuminant },
-      matrix: { value: matrix },
-    }
-		this.material = new Three.ShaderMaterial({
-      uniforms,
-			vertexShader,
-			fragmentShader,
-		})
-		this.mesh = new Three.Mesh(this.geometry, this.material)
-		this.scene.add(this.mesh)
-		this.renderer = new Three.WebGLRenderer({
+    this.renderer = new Three.WebGLRenderer({
       canvas: this.canvas,
+      alpha: true,
     })
-		// this.renderer.setPixelRatio(window.devicePixelRatio)
+    this.renderer.setPixelRatio(window.devicePixelRatio)
+    this.renderer.setSize(this.props.width, this.props.height)
+    this.camera = new Three.Camera()
+    this.camera.position.z = 1
+    this.scene = new Three.Scene()
+    this.geometry = new Three.PlaneBufferGeometry(2, 2)
+    this.material = new Three.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+    })
+    this.mesh = new Three.Mesh(this.geometry, this.material)
+    this.scene.add(this.mesh)
   }
 
   draw() {
@@ -72,10 +61,18 @@ export default class LChuvSpectrum extends React.Component {
   render() {
     return (
       <canvas
-        width="1000"
-        height="500"
-        ref={canvas => this.canvas = canvas}>
-      </canvas>
+        ref={canvas => this.canvas = canvas}
+      />
     )
   }
+}
+
+RYBWheel.defaultProps = {
+  width: 500,
+  height: 500,
+}
+
+RYBWheel.propTypes = {
+  width: PropTypes.number,
+  height: PropTypes.number,
 }

@@ -55,4 +55,8 @@ vec3 rgb2ryb(vec3 rgb) {
   return vec3(r, y, b);
 }
 
+vec4 rgb2ryb(vec4 rgb) {
+  return vec4(rgb2ryb(rgb.xyz), rgb.w);
+}
+
 #pragma glslify: export(rgb2ryb)

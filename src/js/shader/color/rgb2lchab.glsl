@@ -28,7 +28,15 @@ vec3 lab2lchab(vec3 lab) {
   return vec3(lab.x, length(vec2(lab.yz)), atan(lab.z, lab.y));
 }
 
+vec4 lab2lchab(vec4 lab) {
+  return vec4(lab2lchab(lab.xyz), lab.w);
+}
+
 vec3 rgb2lchab(vec3 rgb, vec3 illuminant) {
+  return lab2lchab(rgb2lab(rgb, illuminant));
+}
+
+vec4 rgb2lchab(vec4 rgb, vec3 illuminant) {
   return lab2lchab(rgb2lab(rgb, illuminant));
 }
 

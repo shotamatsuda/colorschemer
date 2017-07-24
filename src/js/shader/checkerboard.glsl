@@ -22,20 +22,10 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import React from 'react'
-import ReactDOM from 'react-dom'
-
-import LChabSpectrum from './component/LChabSpectrum'
-
-function App() {
-  return (
-    <div>
-      <LChabSpectrum />
-    </div>
-  )
+vec4 checkerboard(vec2 coord, float size) {
+  vec2 xy = floor(coord / size);
+  bool even = mod(xy.x + xy.y, 2.0) == 0.0;
+  return even ? vec4(vec3(0.5), 1.0) : vec4(vec3(0.6), 1.0);
 }
 
-ReactDOM.render(
-  <App />,
-  document.getElementById('app'),
-)
+#pragma glslify: export(checkerboard)

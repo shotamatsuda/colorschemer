@@ -25,6 +25,7 @@
 // TODO: Optimization
 
 #pragma glslify: tristimulus = require('./tristimulus')
+#pragma glslify: validate = require('./validate')
 #pragma glslify: xyz2rgb = require('./xyz2rgb', matrix=matrix)
 
 float decompand(float value) {
@@ -35,18 +36,23 @@ float decompand(float value) {
 }
 
 vec3 lab2xyz(vec3 lab, vec3 illuminant) {
-  float l = lab.x;
-  float a = lab.y;
-  float b = lab.z;
   vec3 w = tristimulus(illuminant, 1.0);
-  float t = (l + 16.0) / 116.0;
+  float t = (lab.x + 16.0) / 116.0;
   return vec3(
-    decompand(t + a / 500.0) * w.x,
+    decompand(t + lab.y / 500.0) * w.x,
     decompand(t) * w.y,
-    decompand(t - b / 200.0) * w.z);
+    decompand(t - lab.z / 200.0) * w.z);
+}
+
+vec4 lab2xyz(vec4 lab, vec3 illuminant) {
+  return vec4(lab2xyz(lab.xyz, illuminant), lab.w);
 }
 
 vec3 lab2rgb(vec3 lab, vec3 illuminant) {
+  return xyz2rgb(lab2xyz(lab, illuminant));
+}
+
+vec4 lab2rgb(vec4 lab, vec3 illuminant) {
   return xyz2rgb(lab2xyz(lab, illuminant));
 }
 

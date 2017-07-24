@@ -22,54 +22,24 @@
 //  DEALINGS IN THE SOFTWARE.
 //
 
-import babel from 'rollup-plugin-babel'
-import commonjs from 'rollup-plugin-commonjs'
-import glslify from '@shotamatsuda/rollup-plugin-glslify'
-import nodeResolve from 'rollup-plugin-node-resolve'
-import replace from 'rollup-plugin-replace'
+uniform vec2 resolution;
+uniform vec3 illuminant;
+uniform mat3 matrix;
+uniform float chroma;
 
-export default {
-  entry: './src/js/main.jsx',
-  sourceMap: true,
-  plugins: [
-    replace({
-      'process.env.NODE_ENV': JSON.stringify('development'),
-    }),
-    glslify(),
-    nodeResolve({
-      main: true,
-      module: true,
-      browser: true,
-      extensions: ['.js', '.json', '.jsx']
-    }),
-    commonjs(),
-    babel({
-      presets: [
-        ['es2015', { modules: false }],
-        'es2016',
-        'es2017',
-        'stage-3',
-        'react',
-      ],
-      plugins: [
-        'external-helpers',
-      ],
-    }),
-  ],
-  external: [
-    'react',
-    'react-dom',
-    'three',
-  ],
-  globals: {
-    'react': 'React',
-    'react-dom': 'ReactDOM',
-    'three': 'THREE',
-  },
-  targets: [
-    {
-      format: 'iife',
-      dest: './dist/js/main.js',
-    },
-  ],
+varying vec2 vUv;
+
+const float pi = 3.14159265358979323846264338327950288419;
+
+#pragma glslify: lchuv2rgb = require('./color/lchuv2rgb', matrix=matrix)
+#pragma glslify: checkerboard = require('./checkerboard')
+
+void main()  {
+  vec2 uv = vUv;
+  vec2 coord = uv * resolution;
+  float l = uv.y * 100.0;
+  float h = uv.x * pi * 2.0;
+  vec4 color = lchuv2rgb(vec4(l, chroma, h, 1.0), illuminant);
+  vec4 transparent = checkerboard(coord, 8.0);
+  gl_FragColor = vec4(mix(transparent.rgb, color.rgb, color.a), 1.0);
 }

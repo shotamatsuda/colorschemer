@@ -53,4 +53,8 @@ vec3 ryb2rgb(vec3 ryb) {
   return vec3(r, g, b);
 }
 
+vec4 ryb2rgb(vec4 ryb) {
+  return vec4(ryb2rgb(ryb.xyz), ryb.w);
+}
+
 #pragma glslify: export(ryb2rgb)

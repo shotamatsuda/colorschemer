@@ -24,8 +24,9 @@
 
 // TODO: Optimization
 
-#pragma glslify: tristimulus = require('./tristimulus')
 #pragma glslify: rgb2xyz = require('./rgb2xyz', matrix=matrix)
+#pragma glslify: tristimulus = require('./tristimulus')
+#pragma glslify: validate = require('./validate')
 
 float compand(float value) {
   if (value > 216.0 / 24389.0) {
@@ -43,7 +44,15 @@ vec3 xyz2lab(vec3 xyz, vec3 illuminant) {
     200.0 * (t - compand(xyz.z / w.z)));
 }
 
+vec4 xyz2lab(vec4 xyz, vec3 illuminant) {
+  return vec4(xyz2lab(xyz.xyz), xyz.w);
+}
+
 vec3 rgb2lab(vec3 rgb, vec3 illuminant) {
+  return xyz2lab(rgb2xyz(rgb), illuminant);
+}
+
+vec4 rgb2lab(vec4 rgb, vec3 illuminant) {
   return xyz2lab(rgb2xyz(rgb), illuminant);
 }
 

@@ -24,11 +24,19 @@
 
 #pragma glslify: rgb2luv = require('./rgb2luv', matrix=matrix)
 
-vec3 luc2lchuv(vec3 lab) {
-  return vec3(lab.x, length(vec2(lab.yz)), atan(lab.z, lab.y));
+vec3 luc2lchuv(vec3 luv) {
+  return vec3(luv.x, length(vec2(luv.yz)), atan(luv.z, luv.y));
+}
+
+vec4 luc2lchuv(vec4 luv) {
+  return vec4(luc2lchuv(luv.xyz), luv.w);
 }
 
 vec3 rgb2lchuv(vec3 rgb, vec3 illuminant) {
+  return luc2lchuv(rgb2luv(rgb, illuminant));
+}
+
+vec4 rgb2lchuv(vec4 rgb, vec3 illuminant) {
   return luc2lchuv(rgb2luv(rgb, illuminant));
 }
 

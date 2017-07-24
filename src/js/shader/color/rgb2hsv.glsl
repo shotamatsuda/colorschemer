@@ -46,4 +46,8 @@ vec3 rgb2hsv(vec3 rgb) {
   return vec3(h, s, v);
 }
 
+vec4 rgb2hsv(vec4 rgb) {
+  return vec4(rgb2hsv(rgb.xyz), rgb.w);
+}
+
 #pragma glslify: export(rgb2hsv)
