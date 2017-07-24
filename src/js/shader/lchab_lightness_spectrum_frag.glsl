@@ -25,6 +25,7 @@
 uniform vec2 resolution;
 uniform vec3 illuminant;
 uniform mat3 matrix;
+uniform float maxChroma;
 uniform float lightness;
 
 varying vec2 vUv;
@@ -37,7 +38,7 @@ const float pi = 3.14159265358979323846264338327950288419;
 void main()  {
   vec2 uv = vUv;
   vec2 coord = uv * resolution;
-  float c = (1.0 - uv.y) * 132.0;
+  float c = (1.0 - uv.y) * maxChroma;
   float h = uv.x * pi * 2.0;
   vec4 color = lchab2rgb(vec4(lightness, c, h, 1.0), illuminant);
   vec4 transparent = checkerboard(coord, 8.0);
